@@ -1,0 +1,105 @@
+{% extends "_layout" %}
+
+{% block main %}
+
+<ul class="breadcrumbs">
+        <li><a href="/recipes">Recipes</a></li>
+        <li>{{ entry.title }}</li>
+    </ul>
+    <div class="full-bleed-header" style="background-size: 100%; height: 300px; background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(https://thepintpundits.files.wordpress.com/2013/02/dark-horse-tres-blueberry-stout-1.jpg); background-repeat: no-repeat, repeat;">
+        <div class="page-title text-center">
+            <h2 class="logo"><span class="scripty">{{ entry.title }}</h2>
+            <p class="tagline reverse">{% for style in entry.style %} {{ style.title }} {% endfor %}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="intro large-12 small-12 columns text-center">
+
+             <p>{{ entry.introduction }}</p>
+
+
+            <p>{{ entry.title }} Originally Brewed: {{ entry.originalBrewDate | date('F d, Y')}}</p>
+        </div>  
+    </div>
+    <div class="row">
+            <div class="panel radius snapshot large-12 small-12 columns">
+                <h3>Brew Snapshot</h3>
+                <ul>
+                  {% for item in entry.recipeSnapshot%}
+                    <li>{{ item.snapshotText }}</li>
+                  {% endfor %}
+                </ul>
+            </div>
+
+            {% for block in entry.recipeContents %}
+
+            {% switch block.type %}
+
+            {% case 'recipeImage' %}
+
+
+            {% set image = block.recipeImage.first() %}
+
+            <div class="photo-inset full"> <!-- full, left, right -->
+                <img src="{{ image.url }}"
+                     alt="{{ block.imageCaption }}"/>
+    
+                <p class="caption">
+                    <small>{{ block.imageCaption }}</small>
+                </p>
+            </div>
+
+            {% case 'recipeCopy' %}
+
+           
+
+                {{ block.bodyContent }}
+
+
+
+            {% case 'recipeIngredients' %}
+         
+            <table width="100%">
+                <tr>
+                    <th width="20%">Amount</th>
+                    <th>Ingredient</th>
+                </tr>
+                
+                {% for row in block.ingredients %}
+
+                <tr>
+                    <td>{{ row.amount }}</td>
+                    <td>{{ row.ingredient }}</td>
+                </tr>
+
+                {% endfor %}
+                
+            </table>
+
+
+            {% case 'recipeSteps' %}
+
+            <div class="steps">
+                <h3>{{ block.stepsTitle }}</h3>
+                <ol>
+                    {% for step in block.stepsContent %}
+                    <li>{{ step.stepInstructions}}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+
+
+            {% case 'recipeTip'%}
+
+            <div class="panel tip">
+                    <p>{{ block.tipContent}}</p>
+                </div>
+        
+        {% endswitch %}
+
+        {% endfor %}
+
+        </div>
+    </div>
+
+{% endblock %}
